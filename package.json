@@ -2,7 +2,7 @@
 	"name": "smart-cursor-undo",
 	"displayName": "Smart Cursor Undo",
 	"description": "Smarter cursor undo that groups similar cursor movements as one undo motion.",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"engines": {
 		"vscode": "^1.32.0"
 	},
@@ -10,14 +10,18 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "extension.smartCursorUndo.cursorUndo",
+				"title": "Smart Cursor Undo: Cursor Undo"
+			},
+			{
+				"command": "extension.smartCursorUndo.cursorRedo",
+				"title": "Smart Cursor Undo: Cursor Redo"
 			}
 		]
 	},
