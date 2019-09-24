@@ -148,53 +148,7 @@ suite("Smart Cursor Undo", function () {
         assertSelectionEqual(editor, 1, 2, 1, 4);
     });
 
-    test("Should correctly go back to original cursor position when undo multi-line motions (rule #6)", async () => {
-        const editor = getEditor();
-
-        await vscode.commands.executeCommand('cursorRight');
-        await vscode.commands.executeCommand('cursorRight');
-        assertActivePositionEqual(editor, 0, 2);
-
-        await vscode.commands.executeCommand('cursorMove', {"to": "down", "by": "line", "value": 5});
-        await vscode.commands.executeCommand('cursorMove', {"to": "down", "by": "line", "value": 5});
-        assertActivePositionEqual(editor, 10, 2);
-
-        await vscode.commands.executeCommand('extension.smartCursorUndo.cursorUndo');
-        assertActivePositionEqual(editor, 0, 2);
-    });
-
-    test("Should correctly undo single line motion after multi-line motions (rule #6)", async () => {
-        const editor = getEditor();
-
-        await vscode.commands.executeCommand('cursorMove', {"to": "down", "by": "line", "value": 5});
-        await vscode.commands.executeCommand('cursorMove', {"to": "down", "by": "line", "value": 5});
-        assertActivePositionEqual(editor, 10, 0);
-
-        await vscode.commands.executeCommand('cursorRight');
-        await vscode.commands.executeCommand('cursorRight');
-        await vscode.commands.executeCommand('cursorRight');
-        await vscode.commands.executeCommand('cursorLeft');
-        assertActivePositionEqual(editor, 10, 2);
-
-        await vscode.commands.executeCommand('extension.smartCursorUndo.cursorUndo');
-        assertActivePositionEqual(editor, 10, 0);
-    });
-
-    test("Should correctly go back to original cursor position when undo page down (rule #6)", async () => {
-        const editor = getEditor();
-
-        await vscode.commands.executeCommand('cursorRight');
-        await vscode.commands.executeCommand('cursorRight');
-        await vscode.commands.executeCommand('cursorMove', {"to": "down", "by": "line", "value": 3});
-        assertActivePositionEqual(editor, 3, 2);
-
-        await vscode.commands.executeCommand('cursorPageDown');
-        await vscode.commands.executeCommand('cursorPageDown');
-        await vscode.commands.executeCommand('extension.smartCursorUndo.cursorUndo');
-        assertActivePositionEqual(editor, 3, 2);
-    });
-
-    test("Should correctly go back to first editing location (rule #7)", async () => {
+    test("Should correctly go back to first editing location (rule #6)", async () => {
         const editor = getEditor();
 
         await vscode.commands.executeCommand('cursorRight');
@@ -210,7 +164,7 @@ suite("Smart Cursor Undo", function () {
         assertActivePositionEqual(editor, 0, 2);
     });
 
-    test("Should correctly go back to last location when editing stopped (rule #8)", async () => {
+    test("Should correctly go back to last location when editing stopped (rule #7)", async () => {
         const editor = getEditor();
 
         await vscode.commands.executeCommand('cursorRight');
@@ -230,7 +184,9 @@ suite("Smart Cursor Undo", function () {
 
     test("Should correctly undo multiple times", async () => {
         const editor = getEditor();
+        await vscode.commands.executeCommand('type', {"text": "0"});
 
+        await vscode.commands.executeCommand('cursorLeft');
         await vscode.commands.executeCommand('cursorRight');
         await vscode.commands.executeCommand('cursorRight');
         assertActivePositionEqual(editor, 0, 2);
@@ -271,15 +227,17 @@ suite("Smart Cursor Undo", function () {
         assertActivePositionEqual(editor, 4, 1);
 
         await vscode.commands.executeCommand('extension.smartCursorUndo.cursorUndo');
-        assertActivePositionEqual(editor, 4, 2);
+        assertActivePositionEqual(editor, 0, 1);
 
         await vscode.commands.executeCommand('extension.smartCursorUndo.cursorUndo');
-        assertActivePositionEqual(editor, 0, 2);
+        assertActivePositionEqual(editor, 0, 0);
     });
 
     test("Should correctly redo", async () => {
         const editor = getEditor();
+        await vscode.commands.executeCommand('type', {"text": "0"});
 
+        await vscode.commands.executeCommand('cursorLeft');
         await vscode.commands.executeCommand('cursorRight');
         await vscode.commands.executeCommand('cursorRight');
         assertActivePositionEqual(editor, 0, 2);
@@ -308,7 +266,7 @@ suite("Smart Cursor Undo", function () {
         assertActivePositionEqual(editor, 4, 1);
 
         await vscode.commands.executeCommand('extension.smartCursorUndo.cursorUndo');
-        assertActivePositionEqual(editor, 4, 2);
+        assertActivePositionEqual(editor, 0, 1);
 
         await vscode.commands.executeCommand('extension.smartCursorUndo.cursorRedo');
         assertActivePositionEqual(editor, 4, 1);
